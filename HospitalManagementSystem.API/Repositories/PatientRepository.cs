@@ -66,10 +66,47 @@ namespace HospitalManagementSystem.API.Repositories
 
             command.ExecuteNonQuery();
         }
-
-        internal void AddPatient(PatientController patient)
+        public Patient GetPatientById(int id)
         {
-            throw new NotImplementedException();
+            using SqlConnection connection = _dbConnection.CreateConnection();
+
+            connection.Open();
+
+            string query = "SELECT * FROM Patients WHERE PatientId = @PatientId";
+
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@PatientId", id);
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            if(reader.Read())
+            {
+                Patient patient = new Patient();
+
+                patient.PatientId = Convert.ToInt32(reader["PatientId"]);
+
+                patient.Name = reader["Name"].ToString();
+
+                patient.Age = Convert.ToInt32(reader["Age"]);
+
+                patient.Gender = reader["Gender"].ToString();
+
+                patient.Phone = reader["Phone"].ToString();
+
+                patient.Address = reader["Address"].ToString();
+
+                return patient;
+
+
+
+            }
+            return null;
+
         }
+
+
+           
+      
     }
 }
