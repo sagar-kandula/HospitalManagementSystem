@@ -31,6 +31,14 @@ namespace HospitalManagementSystem.API.Controllers
             return Ok("Patient added successfully!");
         }
 
+        [HttpPut]
+        public IActionResult UpdatePatient(Patient patient)
+        {
+            _patientRepository.UpdatePatient(patient);
+
+            return Ok("UPatient Updated SuccessFully");
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetPatientById(int id)
         {

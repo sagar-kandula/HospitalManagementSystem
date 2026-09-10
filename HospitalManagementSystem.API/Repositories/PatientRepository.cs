@@ -44,6 +44,33 @@ namespace HospitalManagementSystem.API.Repositories
 
             return patients;
         }
+        public void UpdatePatient(Patient patient)
+        {
+            using SqlConnection connection = _dbConnection.CreateConnection();
+            connection.Open();
+
+            string query = @"UPDATE Patients
+                             SET Name = @Name,
+                                 Age = @Age,
+                                 Gender = @Gender,
+                                 Phone = @Phone,
+                                 Address = @Address
+                                 WHERE PatientId = @PatientId";
+
+
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@PatientId", patient.PatientId);
+
+            command.Parameters.AddWithValue("@Name", patient.Name);
+            command.Parameters.AddWithValue("@Age", patient.Age);
+            command.Parameters.AddWithValue("@Gender", patient.Gender);
+            command.Parameters.AddWithValue("@Phone", patient.Phone);
+            command.Parameters.AddWithValue("@Address", patient.Address);
+
+            command.ExecuteNonQuery();
+
+        }
         public void AddPatient(Patient patient)
         {
             using SqlConnection connection = _dbConnection.CreateConnection();
