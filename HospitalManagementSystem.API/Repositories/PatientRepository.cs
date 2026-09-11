@@ -8,6 +8,7 @@ namespace HospitalManagementSystem.API.Repositories
     public class PatientRepository
     {
         private readonly DbConnection _dbConnection;
+        private object id;
 
         public PatientRepository(DbConnection dbConnection)
         {
@@ -93,6 +94,21 @@ namespace HospitalManagementSystem.API.Repositories
 
             command.ExecuteNonQuery();
         }
+        public void DeletePatient(int id)
+        {
+            using SqlConnection connection = _dbConnection.CreateConnection();
+
+            connection.Open();
+
+            string query = "DELETE FROM Patients WHERE PatientId = @PatientId";
+
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@PatientId", id);
+
+            command.ExecuteNonQuery();
+        }
+
         public Patient GetPatientById(int id)
         {
             using SqlConnection connection = _dbConnection.CreateConnection();

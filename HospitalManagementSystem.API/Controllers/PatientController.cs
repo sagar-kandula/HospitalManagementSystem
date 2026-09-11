@@ -36,7 +36,15 @@ namespace HospitalManagementSystem.API.Controllers
         {
             _patientRepository.UpdatePatient(patient);
 
-            return Ok("UPatient Updated SuccessFully");
+            return Ok("Patient Updated Successfully");
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeletePatient(int id)
+        {
+            _patientRepository.DeletePatient(id);
+
+            return Ok("Patient deleted Successfully!");
         }
 
         [HttpGet("{id}")]
