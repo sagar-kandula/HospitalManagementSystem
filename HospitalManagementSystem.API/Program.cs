@@ -16,6 +16,8 @@ namespace HospitalManagementSystem.API
             builder.Services.AddSingleton<DbConnection>();
 
             builder.Services.AddSingleton<PatientRepository>();
+
+            builder.Services.AddSingleton<DoctorRepository>();
             
             builder.Services.AddOpenApi();
 
