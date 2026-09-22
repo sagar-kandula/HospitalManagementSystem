@@ -18,6 +18,8 @@ namespace HospitalManagementSystem.API
             builder.Services.AddSingleton<PatientRepository>();
 
             builder.Services.AddSingleton<DoctorRepository>();
+
+            builder.Services.AddSingleton<AppointmentRepository>();
             
             builder.Services.AddOpenApi();
 
