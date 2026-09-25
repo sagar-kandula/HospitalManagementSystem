@@ -69,7 +69,12 @@ namespace HospitalManagementSystem.API.Repositories
             command.Parameters.AddWithValue("@Phone", patient.Phone);
             command.Parameters.AddWithValue("@Address", patient.Address);
 
-            command.ExecuteNonQuery();
+            int rowsAffected = command.ExecuteNonQuery();
+
+            if(rowsAffected == 0)
+            {
+                throw new Exception("Patient does not exist.");
+            }
 
         }
         public void AddPatient(Patient patient)
@@ -106,7 +111,12 @@ namespace HospitalManagementSystem.API.Repositories
 
             command.Parameters.AddWithValue("@PatientId", id);
 
-            command.ExecuteNonQuery();
+            int rowsAffected = command.ExecuteNonQuery();
+
+            if(rowsAffected == 0)
+            {
+                throw new Exception("Patient does not exist.");
+            }
         }
 
         public Patient GetPatientById(int id)

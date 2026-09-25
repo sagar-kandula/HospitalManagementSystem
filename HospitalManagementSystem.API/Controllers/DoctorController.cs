@@ -27,26 +27,70 @@ namespace HospitalManagementSystem.API.Controllers
         {
             _doctorRepository.AddDoctor(doctor);
 
-            return Ok("Doctor added successfully!");
+            return StatusCode(201, "Doctor added successfully!");
         }
         [HttpPut]
         public IActionResult UpdateDoctor(Doctor doctor)
         {
-            _doctorRepository.UpdateDoctor(doctor);
+            try
+            {
+                _doctorRepository.UpdateDoctor(doctor);
 
-            return Ok("Doctor Updated successfully!");
+                return Ok("Doctor Updated successfully!");
+            }
+            catch(Exception ex)
+            {
+                if(ex.Message == "Doctor does not exist")
+                {
+                    return NotFound(new
+                    {
+                        message = ex.Message
+                    });
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
         [HttpDelete("{id}")]
         public  IActionResult DeleteDoctor(int id)
         {
-            _doctorRepository.DeleteDoctor(id);
+            try
+            {
 
-            return Ok("Doctor deleted successfully!");
+                _doctorRepository.DeleteDoctor(id);
+
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                if(ex.Message == "Doctor does not exist")
+                {
+                    return NotFound(new
+                    {
+                        message = ex.Message
+                    });
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
         [HttpGet("{id}")]
         public IActionResult GetDoctor(int id)
         {
             var doctor = _doctorRepository.GetDoctorById(id);
+
+            if(doctor == null)
+            {
+                return NotFound(new
+                {
+                    message = "Doctor not found."
+                });
+            }
+
 
             return Ok(doctor);
         }

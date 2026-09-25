@@ -91,7 +91,11 @@ namespace HospitalManagementSystem.API.Repositories
             command.Parameters.AddWithValue("@Phone", doctor.Phone);
             command.Parameters.AddWithValue("@Email", doctor.Email);
 
-            command.ExecuteNonQuery();
+            int rowsAffected = command.ExecuteNonQuery();
+            if(rowsAffected == 0)
+            {
+                throw new Exception("Doctor does not exist.");
+            }
 
         }
         public void DeleteDoctor(int id)
@@ -106,7 +110,11 @@ namespace HospitalManagementSystem.API.Repositories
 
             command.Parameters.AddWithValue("@DoctorId", id);
 
-            command.ExecuteNonQuery();
+            int rowsAffected = command.ExecuteNonQuery();
+            if(rowsAffected == 0)
+            {
+                throw new Exception("Doctor does not exist.");
+            }
         }
         public Doctor GetDoctorById(int id)
         {

@@ -25,28 +25,87 @@ namespace HospitalManagementSystem.API.Controllers
         [HttpPost]
         public IActionResult AddAppointment(Appointment appointment)
         {
-            _appointmentRepository.AddAppointment(appointment);
+            try
+            {
+                _appointmentRepository.AddAppointment(appointment);
 
-            return Ok("Appointment added successfully!");
+                return StatusCode(201, "Appointment added successfully!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+
+            }
+            
         }
         [HttpPut]
         public IActionResult UpdateAppointment(Appointment appointment)
         {
-            _appointmentRepository.UpdateAppointment(appointment);
+            try
+            {
+                _appointmentRepository.UpdateAppointment(appointment);
 
-            return Ok("Appointment updated successfully!");
+                return Ok("Appointment updated successfully!");
+            }
+            catch(Exception ex)
+            {
+                if (ex.Message == "Appointment does not exist.") ;
+                {
+                    return NotFound(new
+                    {
+                        message = ex.Message
+
+                    });
+
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+
+            }
+            
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteAppointment(int id)
         {
-            _appointmentRepository.DeleteAppointment(id);
+            try
+            {
 
-            return Ok("Appointment deleted successfully!");
+                _appointmentRepository.DeleteAppointment(id);
+
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                if(ex.Message == "Appointment does not exist.")
+                {
+                    return NotFound(new
+                    {
+                        message = ex.Message
+                    });
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
         [HttpGet("{id}")]
         public IActionResult GetAppointmentById(int id)
         {
             var appointment = _appointmentRepository.GetAppointmentById(id);
+
+            if(appointment == null)
+            {
+                return NotFound(new
+                {
+                    message = "Appointment not fount."
+                });
+            }
 
             return Ok(appointment);
 

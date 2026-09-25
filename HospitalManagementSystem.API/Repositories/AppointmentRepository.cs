@@ -47,25 +47,43 @@ namespace HospitalManagementSystem.API.Repositories
         }
         public void AddAppointment(Appointment appointment)
         {
-            using SqlConnection connection = _dbConnection.CreateConnection();
+            if (!PatientExists(appointment.PatientId))
+            {
+                throw new Exception("Patient does not exist.");
 
-            connection.Open();
+            }
+            if(!DoctorExists(appointment.DoctorId))
+            {
+                throw new Exception("Doctor does not exist.");
+            }
 
-            string query = @"INSERT INTO Appointments
-                           (PatientId, DoctorId, AppointmentDate, AppointmentTime, Status)
-                           VALUES
-                           (@PatientId, @DoctorId, @AppointmentDate, @AppointmentTime, @Status)";
+            try
+            {
+
+                using SqlConnection connection = _dbConnection.CreateConnection();
+
+                connection.Open();
+
+                string query = @"INSERT INTO Appointments
+                               (PatientId, DoctorId, AppointmentDate, AppointmentTime, Status)
+                               VALUES
+                               (@PatientId, @DoctorId, @AppointmentDate, @AppointmentTime, @Status)";
 
 
-            using SqlCommand command = new SqlCommand(query, connection);
+                using SqlCommand command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@PatientId", appointment.PatientId);
-            command.Parameters.AddWithValue("@DoctorId", appointment.DoctorId);
-            command.Parameters.AddWithValue("@AppointmentDate", appointment.AppointmentDate);
-            command.Parameters.AddWithValue("@AppointmentTime", appointment.AppointmentTime);
-            command.Parameters.AddWithValue("@Status", appointment.Status);
+                command.Parameters.AddWithValue("@PatientId", appointment.PatientId);
+                command.Parameters.AddWithValue("@DoctorId", appointment.DoctorId);
+                command.Parameters.AddWithValue("@AppointmentDate", appointment.AppointmentDate);
+                command.Parameters.AddWithValue("@AppointmentTime", appointment.AppointmentTime);
+                command.Parameters.AddWithValue("@Status", appointment.Status);
 
-            command.ExecuteNonQuery();
+                command.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                throw new Exception("Unable to add appointment. Please check PatientId and DoctorId.", ex);
+            }
 
         }
         public void UpdateAppointment(Appointment appointment)
@@ -92,7 +110,12 @@ namespace HospitalManagementSystem.API.Repositories
             command.Parameters.AddWithValue("@AppointmentTime", appointment.AppointmentTime);
             command.Parameters.AddWithValue("@Status", appointment.Status);
 
-            command.ExecuteNonQuery();
+            int rowsAffected = command.ExecuteNonQuery();
+
+            if(rowsAffected == 0)
+            {
+                throw new Exception("Appointment does not exist.");
+            }
 
         }
         public void DeleteAppointment(int id)
@@ -107,7 +130,12 @@ namespace HospitalManagementSystem.API.Repositories
 
             command.Parameters.AddWithValue("@AppointmentId", id);
 
-            command.ExecuteNonQuery();
+            int rowsAffected = command.ExecuteNonQuery();
+            
+            if(rowsAffected == 0)
+            {
+                throw new Exception("Appointment does not exist.");
+            }
 
         }
         public Appointment GetAppointmentById(int id)
@@ -144,6 +172,38 @@ namespace HospitalManagementSystem.API.Repositories
             }
             return null;
 
+        }
+        private bool PatientExists(int patientId)
+        {
+            using SqlConnection connection = _dbConnection.CreateConnection();
+
+            connection.Open();
+
+            string query = "SELECT COUNT(1) FROM Patients Where PatientId = @PatientId";
+
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@PatientId", patientId);
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+
+            return count > 0;
+        }
+        private bool DoctorExists(int doctorId)
+        {
+            using SqlConnection connection = _dbConnection.CreateConnection();
+
+            connection.Open();
+
+            string query = "SELECT COUNT(1) FROM Doctors Where DoctorId = @DoctorId";
+
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@DoctorId", doctorId);
+
+            int count = Convert.ToInt32(command.ExecuteScalar());
+
+            return count > 0;
         }
 
     }

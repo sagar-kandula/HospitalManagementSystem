@@ -28,29 +28,72 @@ namespace HospitalManagementSystem.API.Controllers
         {
             _patientRepository.AddPatient(patient);
 
-            return Ok("Patient added successfully!");
+            return StatusCode(201,"Patient added successfully!");
         }
 
         [HttpPut]
         public IActionResult UpdatePatient(Patient patient)
         {
-            _patientRepository.UpdatePatient(patient);
+            try
+            {
+                _patientRepository.UpdatePatient(patient);
 
-            return Ok("Patient Updated Successfully");
+                return Ok("Patient Updated Successfully");
+            }
+            catch(Exception ex)
+            {
+                if(ex.Message == "Patient does not exist.")
+                {
+                    return NotFound(new
+                    {
+                        message = ex.Message
+                    });
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeletePatient(int id)
         {
-            _patientRepository.DeletePatient(id);
+            try
+            {
+                _patientRepository.DeletePatient(id);
 
-            return Ok("Patient deleted Successfully!");
+                return NoContent();
+            }
+            catch(Exception ex)
+            {
+                if (ex.Message == "Patient does not exist.") ;
+                {
+                    return NotFound(new
+                    {
+                        message = ex.Message
+                    });
+
+                }
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetPatientById(int id)
         {
             var patient = _patientRepository.GetPatientById(id);
+
+            if(patient == null)
+            {
+                return NotFound(new
+                {
+                    message = "Patient not found."
+                });
+            }
 
             return Ok(patient);
         }
