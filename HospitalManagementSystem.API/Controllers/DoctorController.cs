@@ -1,7 +1,7 @@
-﻿using HospitalManagementSystem.API.Models;
-using HospitalManagementSystem.API.Repositories;
+﻿using HospitalManagementSystem.API.DTOs;
+using HospitalManagementSystem.API.Models;
+using HospitalManagementSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace HospitalManagementSystem.API.Controllers
 {
@@ -9,81 +9,123 @@ namespace HospitalManagementSystem.API.Controllers
     [Route("api/[controller]")]
     public class DoctorController : ControllerBase
     {
-        private readonly DoctorRepository _doctorRepository;
+        private readonly DoctorService _doctorService;
 
-        public DoctorController(DoctorRepository doctorRepository)
+        public DoctorController(DoctorService doctorService)
         {
-            _doctorRepository = doctorRepository;
+            _doctorService = doctorService;
         }
+
         [HttpGet]
         public IActionResult GetAllDoctors()
         {
-            var doctors = _doctorRepository.GetAllDoctors();
+            var doctors = _doctorService.GetAllDoctors();
 
-            return Ok(doctors);
+            List<DoctorResponseDto> doctorDtos = new List<DoctorResponseDto>();
+
+            foreach (var doctor in doctors)
+            {
+                DoctorResponseDto doctorDto = new DoctorResponseDto
+                {
+                    DoctorId = doctor.DoctorId,
+                    Name = doctor.Name,
+                    Specialization = doctor.Specialization,
+                    Experience = doctor.Experience,
+                    Phone = doctor.Phone,
+                    Email = doctor.Email
+                };
+
+                doctorDtos.Add(doctorDto);
+            }
+
+            return Ok(doctorDtos);
         }
+
         [HttpPost]
-        public IActionResult AddDoctor(Doctor doctor)
+        public IActionResult AddDoctor(CreateDoctorDto doctorDto)
         {
-            _doctorRepository.AddDoctor(doctor);
+            Doctor doctor = new Doctor
+            {
+                Name = doctorDto.Name,
+                Specialization = doctorDto.Specialization,
+                Experience = doctorDto.Experience,
+                Phone = doctorDto.Phone,
+                Email = doctorDto.Email
+            };
+
+            _doctorService.AddDoctor(doctor);
 
             return StatusCode(201, "Doctor added successfully!");
         }
+
         [HttpPut]
-        public IActionResult UpdateDoctor(Doctor doctor)
+        public IActionResult UpdateDoctor(UpdateDoctorDto doctorDto)
         {
             try
             {
-                _doctorRepository.UpdateDoctor(doctor);
+                Doctor doctor = new Doctor
+                {
+                    DoctorId = doctorDto.DoctorId,
+                    Name = doctorDto.Name,
+                    Specialization = doctorDto.Specialization,
+                    Experience = doctorDto.Experience,
+                    Phone = doctorDto.Phone,
+                    Email = doctorDto.Email
+                };
+
+                _doctorService.UpdateDoctor(doctor);
 
                 return Ok("Doctor Updated successfully!");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(ex.Message == "Doctor does not exist")
+                if (ex.Message == "Doctor does not exist.")
                 {
                     return NotFound(new
                     {
                         message = ex.Message
                     });
                 }
+
                 return BadRequest(new
                 {
                     message = ex.Message
                 });
             }
         }
+
         [HttpDelete("{id}")]
-        public  IActionResult DeleteDoctor(int id)
+        public IActionResult DeleteDoctor(int id)
         {
             try
             {
-
-                _doctorRepository.DeleteDoctor(id);
+                _doctorService.DeleteDoctor(id);
 
                 return NoContent();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(ex.Message == "Doctor does not exist")
+                if (ex.Message == "Doctor does not exist.")
                 {
                     return NotFound(new
                     {
                         message = ex.Message
                     });
                 }
+
                 return BadRequest(new
                 {
                     message = ex.Message
                 });
             }
         }
-        [HttpGet("{id}")]
-        public IActionResult GetDoctor(int id)
-        {
-            var doctor = _doctorRepository.GetDoctorById(id);
 
-            if(doctor == null)
+        [HttpGet("{id}")]
+        public IActionResult GetDoctorById(int id)
+        {
+            var doctor = _doctorService.GetDoctorById(id);
+
+            if (doctor == null)
             {
                 return NotFound(new
                 {
@@ -91,12 +133,17 @@ namespace HospitalManagementSystem.API.Controllers
                 });
             }
 
+            DoctorResponseDto doctorDto = new DoctorResponseDto
+            {
+                DoctorId = doctor.DoctorId,
+                Name = doctor.Name,
+                Specialization = doctor.Specialization,
+                Experience = doctor.Experience,
+                Phone = doctor.Phone,
+                Email = doctor.Email
+            };
 
-            return Ok(doctor);
+            return Ok(doctorDto);
         }
-
-       
-      
     }
-
 }

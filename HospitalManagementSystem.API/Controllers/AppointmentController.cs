@@ -1,5 +1,6 @@
-﻿using HospitalManagementSystem.API.Models;
-using HospitalManagementSystem.API.Repositories;
+﻿using HospitalManagementSystem.API.DTOs;
+using HospitalManagementSystem.API.Models;
+using HospitalManagementSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HospitalManagementSystem.API.Controllers
@@ -8,26 +9,55 @@ namespace HospitalManagementSystem.API.Controllers
     [Route("api/[controller]")]
     public class AppointmentController : ControllerBase
     {
-        private readonly AppointmentRepository _appointmentRepository;
+        private readonly AppointmentService _appointmentService;
 
-        public AppointmentController(AppointmentRepository appointmentRepository)
+        public AppointmentController(AppointmentService appointmentService)
         {
-            _appointmentRepository = appointmentRepository;
-            
+            _appointmentService = appointmentService;
         }
+
         [HttpGet]
         public IActionResult GetAllAppointments()
         {
-            var appointments = _appointmentRepository.GetAllAppointments();
+            var appointments = _appointmentService.GetAllAppointments();
 
-            return Ok(appointments);
+            List<AppointmentResponseDto> appointmentDtos =
+                new List<AppointmentResponseDto>();
+
+            foreach (var appointment in appointments)
+            {
+                AppointmentResponseDto appointmentDto =
+                    new AppointmentResponseDto
+                    {
+                        AppointmentId = appointment.AppointmentId,
+                        PatientId = appointment.PatientId,
+                        DoctorId = appointment.DoctorId,
+                        AppointmentDate = appointment.AppointmentDate,
+                        AppointmentTime = appointment.AppointmentTime,
+                        Status = appointment.Status
+                    };
+
+                appointmentDtos.Add(appointmentDto);
+            }
+
+            return Ok(appointmentDtos);
         }
+
         [HttpPost]
-        public IActionResult AddAppointment(Appointment appointment)
+        public IActionResult AddAppointment(CreateAppointmentDto appointmentDto)
         {
             try
             {
-                _appointmentRepository.AddAppointment(appointment);
+                Appointment appointment = new Appointment
+                {
+                    PatientId = appointmentDto.PatientId,
+                    DoctorId = appointmentDto.DoctorId,
+                    AppointmentDate = appointmentDto.AppointmentDate,
+                    AppointmentTime = appointmentDto.AppointmentTime,
+                    Status = appointmentDto.Status
+                };
+
+                _appointmentService.AddAppointment(appointment);
 
                 return StatusCode(201, "Appointment added successfully!");
             }
@@ -37,79 +67,96 @@ namespace HospitalManagementSystem.API.Controllers
                 {
                     message = ex.Message
                 });
-
             }
-            
         }
+
         [HttpPut]
-        public IActionResult UpdateAppointment(Appointment appointment)
+        public IActionResult UpdateAppointment(UpdateAppointmentDto appointmentDto)
         {
             try
             {
-                _appointmentRepository.UpdateAppointment(appointment);
+                Appointment appointment = new Appointment
+                {
+                    AppointmentId = appointmentDto.AppointmentId,
+                    PatientId = appointmentDto.PatientId,
+                    DoctorId = appointmentDto.DoctorId,
+                    AppointmentDate = appointmentDto.AppointmentDate,
+                    AppointmentTime = appointmentDto.AppointmentTime,
+                    Status = appointmentDto.Status
+                };
+
+                _appointmentService.UpdateAppointment(appointment);
 
                 return Ok("Appointment updated successfully!");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if (ex.Message == "Appointment does not exist.") ;
+                if (ex.Message == "Appointment does not exist.")
                 {
                     return NotFound(new
                     {
                         message = ex.Message
-
                     });
-
                 }
+
                 return BadRequest(new
                 {
                     message = ex.Message
                 });
-
             }
-            
         }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteAppointment(int id)
         {
             try
             {
-
-                _appointmentRepository.DeleteAppointment(id);
+                _appointmentService.DeleteAppointment(id);
 
                 return NoContent();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(ex.Message == "Appointment does not exist.")
+                if (ex.Message == "Appointment does not exist.")
                 {
                     return NotFound(new
                     {
                         message = ex.Message
                     });
                 }
+
                 return BadRequest(new
                 {
                     message = ex.Message
                 });
             }
         }
+
         [HttpGet("{id}")]
         public IActionResult GetAppointmentById(int id)
         {
-            var appointment = _appointmentRepository.GetAppointmentById(id);
+            var appointment = _appointmentService.GetAppointmentById(id);
 
-            if(appointment == null)
+            if (appointment == null)
             {
                 return NotFound(new
                 {
-                    message = "Appointment not fount."
+                    message = "Appointment not found."
                 });
             }
 
-            return Ok(appointment);
+            AppointmentResponseDto appointmentDto =
+                new AppointmentResponseDto
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    PatientId = appointment.PatientId,
+                    DoctorId = appointment.DoctorId,
+                    AppointmentDate = appointment.AppointmentDate,
+                    AppointmentTime = appointment.AppointmentTime,
+                    Status = appointment.Status
+                };
 
+            return Ok(appointmentDto);
         }
-
     }
 }

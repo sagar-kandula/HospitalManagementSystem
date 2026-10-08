@@ -1,6 +1,7 @@
 
 using HospitalManagementSystem.API.Data;
 using HospitalManagementSystem.API.Repositories;
+using HospitalManagementSystem.API.Services;
 namespace HospitalManagementSystem.API
 {
     public class Program
@@ -15,11 +16,14 @@ namespace HospitalManagementSystem.API
 
             builder.Services.AddSingleton<DbConnection>();
 
-            builder.Services.AddSingleton<PatientRepository>();
+            builder.Services.AddScoped<PatientRepository>();
+            builder.Services.AddScoped<PatientService>();
 
-            builder.Services.AddSingleton<DoctorRepository>();
+            builder.Services.AddScoped<DoctorRepository>();
+            builder.Services.AddScoped<DoctorService>();
 
-            builder.Services.AddSingleton<AppointmentRepository>();
+            builder.Services.AddScoped<AppointmentRepository>();
+            builder.Services.AddScoped<AppointmentService>();
             
             builder.Services.AddOpenApi();
 

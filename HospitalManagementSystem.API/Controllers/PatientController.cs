@@ -1,6 +1,7 @@
-﻿using HospitalManagementSystem.API.Repositories;
+﻿using HospitalManagementSystem.API.Models;
+using HospitalManagementSystem.API.DTOs;
+using HospitalManagementSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
-using HospitalManagementSystem.API.Models;
 
 namespace HospitalManagementSystem.API.Controllers
 {
@@ -8,47 +9,84 @@ namespace HospitalManagementSystem.API.Controllers
     [Route("api/[controller]")]
     public class PatientController : ControllerBase
     {
-        private readonly PatientRepository _patientRepository;
+        private readonly PatientService _patientService;
 
-        public PatientController(PatientRepository patientRepository)
+        public PatientController(PatientService patientService)
         {
-            _patientRepository = patientRepository;
+            _patientService = patientService;
         }
 
         [HttpGet]
         public IActionResult GetAllPatients()
         {
-            var patients = _patientRepository.GetAllPatients();
+            var patients = _patientService.GetAllPatients();
 
-            return Ok(patients);
+            List<PatientResponseDto> patientDtos = new List<PatientResponseDto>();
+
+            foreach (var patient in patients)
+            {
+                PatientResponseDto patientDto = new PatientResponseDto
+                {
+                    PatientId = patient.PatientId,
+                    Name = patient.Name,
+                    Age = patient.Age,
+                    Gender = patient.Gender,
+                    Phone = patient.Phone,
+                    Address = patient.Address
+                };
+
+                patientDtos.Add(patientDto);
+            }
+
+            return Ok(patientDtos);
         }
 
         [HttpPost]
-        public IActionResult AddPatient(Patient patient)
+        public IActionResult AddPatient(CreatePatientDto patientDto)
         {
-            _patientRepository.AddPatient(patient);
+            Patient patient = new Patient
+            {
+                Name = patientDto.Name,
+                Age = patientDto.Age,
+                Gender = patientDto.Gender,
+                Phone = patientDto.Phone,
+                Address = patientDto.Address
+            };
 
-            return StatusCode(201,"Patient added successfully!");
+            _patientService.AddPatient(patient);
+
+            return StatusCode(201, "Patient added successfully!");
         }
 
         [HttpPut]
-        public IActionResult UpdatePatient(Patient patient)
+        public IActionResult UpdatePatient(UpdatePatientDto patientDto)
         {
             try
             {
-                _patientRepository.UpdatePatient(patient);
+                Patient patient = new Patient
+                {
+                    PatientId = patientDto.PatientId,
+                    Name = patientDto.Name,
+                    Age = patientDto.Age,
+                    Gender = patientDto.Gender,
+                    Phone = patientDto.Phone,
+                    Address = patientDto.Address
+                };
+
+                _patientService.UpdatePatient(patient);
 
                 return Ok("Patient Updated Successfully");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(ex.Message == "Patient does not exist.")
+                if (ex.Message == "Patient does not exist.")
                 {
                     return NotFound(new
                     {
                         message = ex.Message
                     });
                 }
+
                 return BadRequest(new
                 {
                     message = ex.Message
@@ -61,20 +99,20 @@ namespace HospitalManagementSystem.API.Controllers
         {
             try
             {
-                _patientRepository.DeletePatient(id);
+                _patientService.DeletePatient(id);
 
                 return NoContent();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if (ex.Message == "Patient does not exist.") ;
+                if (ex.Message == "Patient does not exist.")
                 {
                     return NotFound(new
                     {
                         message = ex.Message
                     });
-
                 }
+
                 return BadRequest(new
                 {
                     message = ex.Message
@@ -85,9 +123,9 @@ namespace HospitalManagementSystem.API.Controllers
         [HttpGet("{id}")]
         public IActionResult GetPatientById(int id)
         {
-            var patient = _patientRepository.GetPatientById(id);
+            var patient = _patientService.GetPatientById(id);
 
-            if(patient == null)
+            if (patient == null)
             {
                 return NotFound(new
                 {
@@ -95,8 +133,17 @@ namespace HospitalManagementSystem.API.Controllers
                 });
             }
 
-            return Ok(patient);
-        }
+            PatientResponseDto patientDto = new PatientResponseDto
+            {
+                PatientId = patient.PatientId,
+                Name = patient.Name,
+                Age = patient.Age,
+                Gender = patient.Gender,
+                Phone = patient.Phone,
+                Address = patient.Address
+            };
 
+            return Ok(patientDto);
+        }
     }
 }
