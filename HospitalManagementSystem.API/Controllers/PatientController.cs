@@ -2,11 +2,13 @@
 using HospitalManagementSystem.API.DTOs;
 using HospitalManagementSystem.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HospitalManagementSystem.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PatientController : ControllerBase
     {
         private readonly PatientService _patientService;
@@ -93,7 +95,7 @@ namespace HospitalManagementSystem.API.Controllers
                 });
             }
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult DeletePatient(int id)
         {
