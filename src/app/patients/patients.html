@@ -1,0 +1,142 @@
+
+<div class="patients-page">
+
+  <header class="page-header">
+    <div>
+      <h1>👥 Patients Management</h1>
+      <p>Manage hospital patient records</p>
+    </div>
+
+    <button class="add-btn" (click)="resetForm(); showForm = true">
+      + Add Patient
+    </button>
+  </header>
+
+  <!-- Add / Edit Patient Form -->
+  <section class="patient-form" *ngIf="showForm">
+
+    <h2>
+      {{ editingIndex !== null ? 'Edit Patient' : 'Add New Patient' }}
+    </h2>
+
+    <form (ngSubmit)="addPatient()">
+
+      <div class="form-grid">
+
+        <div>
+          <label>Patient Name</label>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="patient.name"
+            placeholder="Enter patient name"
+            required>
+        </div>
+
+        <div>
+          <label>Age</label>
+          <input
+            type="number"
+            name="age"
+            [(ngModel)]="patient.age"
+            placeholder="Enter age"
+            min="1"
+            required>
+        </div>
+
+        <div>
+          <label>Gender</label>
+          <select
+            name="gender"
+            [(ngModel)]="patient.gender"
+            required>
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Phone Number</label>
+          <input
+            type="tel"
+            name="phone"
+            [(ngModel)]="patient.phone"
+            placeholder="Enter phone number"
+            required>
+        </div>
+
+      </div>
+
+      <button type="submit" class="save-btn">
+        {{ editingIndex !== null ? 'Update Patient' : 'Save Patient' }}
+      </button>
+
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="resetForm()">
+        Cancel
+      </button>
+
+    </form>
+  </section>
+
+  <!-- Patient Records Table -->
+  <section class="patients-table">
+
+    <h2>Patient Records</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Patient Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>Phone Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let p of patients; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ p.name }}</td>
+          <td>{{ p.age }}</td>
+          <td>{{ p.gender }}</td>
+          <td>{{ p.phone }}</td>
+
+          <td>
+            <button
+              type="button"
+              class="edit-btn"
+              (click)="editPatient(i)">
+              Edit
+            </button>
+
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deletePatient(i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="patients.length === 0">
+          <td colspan="6" class="empty-message">
+            No patient records available.
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+</div>

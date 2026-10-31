@@ -1,0 +1,142 @@
+
+/* Login Page Background */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #e8f2ff, #f4f7fb);
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Login Card */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 36px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 35px rgba(20, 65, 110, 0.12);
+  box-sizing: border-box;
+}
+
+/* Hospital Icon */
+.hospital-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #e5f1ff;
+  color: #1769aa;
+  border-radius: 50%;
+  font-size: 38px;
+  font-weight: bold;
+}
+
+/* Heading */
+.login-card h1 {
+  margin: 0 0 10px;
+  color: #183b5b;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin: 0 0 30px;
+  color: #718096;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Form Fields */
+.form-group {
+  margin-bottom: 20px;
+}
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #34465a;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d7e0ea;
+    border-radius: 9px;
+    background: #fbfdff;
+    color: #243447;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+    .form-group input:focus {
+      border-color: #1976d2;
+      box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
+    }
+
+/* Login Button */
+.login-card button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 9px;
+  background: #1769aa;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+  .login-card button:hover:not(:disabled) {
+    background: #12558c;
+    transform: translateY(-1px);
+  }
+
+  .login-card button:disabled {
+    background: #8aafcf;
+    cursor: not-allowed;
+  }
+
+/* Validation and API Messages */
+.message {
+  margin: 16px 0 0;
+  color: #c62828;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Footer */
+.footer-text {
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid #edf1f5;
+  color: #8995a3;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .login-page {
+    padding: 16px;
+  }
+
+  .login-card {
+    padding: 26px 22px;
+  }
+
+    .login-card h1 {
+      font-size: 23px;
+    }
+}

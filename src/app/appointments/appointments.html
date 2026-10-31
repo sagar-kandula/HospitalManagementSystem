@@ -1,0 +1,150 @@
+
+<div class="appointments-page">
+
+  <header class="page-header">
+    <div>
+      <h1>📅 Appointments Management</h1>
+      <p>Manage hospital appointments</p>
+    </div>
+
+    <button class="add-btn" (click)="resetForm(); showForm = true">
+      + Add Appointment
+    </button>
+  </header>
+
+  <!-- Add / Edit Appointment Form -->
+  <section class="appointment-form" *ngIf="showForm">
+
+    <h2>
+      {{ editingIndex !== null ? 'Edit Appointment' : 'Add New Appointment' }}
+    </h2>
+
+    <form (ngSubmit)="addAppointment()">
+
+      <div class="form-grid">
+
+        <div>
+          <label>Patient Name</label>
+          <input
+            type="text"
+            name="patientName"
+            [(ngModel)]="appointment.patientName"
+            placeholder="Enter patient name"
+            required>
+        </div>
+
+        <div>
+          <label>Doctor Name</label>
+          <input
+            type="text"
+            name="doctorName"
+            [(ngModel)]="appointment.doctorName"
+            placeholder="Enter doctor name"
+            required>
+        </div>
+
+        <div>
+          <label>Appointment Date</label>
+          <input
+            type="date"
+            name="appointmentDate"
+            [(ngModel)]="appointment.appointmentDate"
+            required>
+        </div>
+
+        <div>
+          <label>Appointment Time</label>
+          <input
+            type="time"
+            name="appointmentTime"
+            [(ngModel)]="appointment.appointmentTime"
+            required>
+        </div>
+
+        <div>
+          <label>Status</label>
+          <select
+            name="status"
+            [(ngModel)]="appointment.status"
+            required>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+      </div>
+
+      <button type="submit" class="save-btn">
+        {{ editingIndex !== null ? 'Update Appointment' : 'Save Appointment' }}
+      </button>
+
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="resetForm()">
+        Cancel
+      </button>
+
+    </form>
+  </section>
+
+  <!-- Appointments Records Table -->
+  <section class="appointments-table">
+
+    <h2>Appointments Records</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Patient Name</th>
+          <th>Doctor Name</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let a of appointments; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ a.patientName }}</td>
+          <td>{{ a.doctorName }}</td>
+          <td>{{ a.appointmentDate }}</td>
+          <td>{{ a.appointmentTime }}</td>
+          <td>{{ a.status }}</td>
+
+          <td>
+            <button
+              type="button"
+              class="edit-btn"
+              (click)="editAppointment(i)">
+              Edit
+            </button>
+
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deleteAppointment(i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="appointments.length === 0">
+          <td colspan="7" class="empty-message">
+            No appointment records available.
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+</div>

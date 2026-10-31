@@ -1,0 +1,146 @@
+
+<div class="doctors-page">
+
+  <header class="page-header">
+    <div>
+      <h1>🩺 Doctors Management</h1>
+      <p>Manage hospital doctor records</p>
+    </div>
+
+    <button class="add-btn" (click)="resetForm(); showForm = true">
+      + Add Doctor
+    </button>
+  </header>
+
+  <!-- Add / Edit Doctor Form -->
+  <section class="doctor-form" *ngIf="showForm">
+
+    <h2>
+      {{ editingIndex !== null ? 'Edit Doctor' : 'Add New Doctor' }}
+    </h2>
+
+    <form (ngSubmit)="addDoctor()">
+
+      <div class="form-grid">
+
+        <div>
+          <label>Doctor Name</label>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="doctor.name"
+            placeholder="Enter doctor name"
+            required>
+        </div>
+
+        <div>
+          <label>Specialization</label>
+          <select
+            name="specialization"
+            [(ngModel)]="doctor.specialization"
+            required>
+            <option value="">Select specialization</option>
+            <option value="Cardiologist">Cardiologist</option>
+            <option value="Dermatologist">Dermatologist</option>
+            <option value="Neurologist">Neurologist</option>
+            <option value="Orthopedic">Orthopedic</option>
+            <option value="Pediatrician">Pediatrician</option>
+            <option value="General Physician">General Physician</option>
+            <option value="Gynecologist">Gynecologist</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Experience (Years)</label>
+          <input
+            type="number"
+            name="experience"
+            [(ngModel)]="doctor.experience"
+            placeholder="Enter experience"
+            min="1"
+            required>
+        </div>
+
+        <div>
+          <label>Phone Number</label>
+          <input
+            type="tel"
+            name="phone"
+            [(ngModel)]="doctor.phone"
+            placeholder="Enter phone number"
+            required>
+        </div>
+
+      </div>
+
+      <button type="submit" class="save-btn">
+        {{ editingIndex !== null ? 'Update Doctor' : 'Save Doctor' }}
+      </button>
+
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="resetForm()">
+        Cancel
+      </button>
+
+    </form>
+  </section>
+
+  <!-- Doctors Records Table -->
+  <section class="doctors-table">
+
+    <h2>Doctors Records</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Doctor Name</th>
+          <th>Specialization</th>
+          <th>Experience</th>
+          <th>Phone Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let d of doctors; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ d.name }}</td>
+          <td>{{ d.specialization }}</td>
+          <td>{{ d.experience }} Years</td>
+          <td>{{ d.phone }}</td>
+
+          <td>
+            <button
+              type="button"
+              class="edit-btn"
+              (click)="editDoctor(i)">
+              Edit
+            </button>
+
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="deleteDoctor(i)">
+              Delete
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="doctors.length === 0">
+          <td colspan="6" class="empty-message">
+            No doctor records available.
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </section>
+
+</div>

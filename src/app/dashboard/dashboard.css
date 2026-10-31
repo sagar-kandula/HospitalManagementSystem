@@ -1,0 +1,106 @@
+
+/* Main Dashboard */
+.dashboard {
+  min-height: 100vh;
+  background: #f3f6fb;
+  font-family: Arial, sans-serif;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  background: #1769aa;
+  color: white;
+  padding: 28px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.dashboard-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+}
+
+.dashboard-header p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Logout Button */
+.logout-btn {
+  padding: 11px 22px;
+  border: 1px solid white;
+  border-radius: 8px;
+  background: white;
+  color: #1769aa;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #e8f2ff;
+}
+
+/* Dashboard Content */
+.dashboard-content {
+  padding: 32px;
+}
+
+.dashboard-content h2 {
+  color: #183b5b;
+  margin-bottom: 24px;
+}
+
+/* Dashboard Cards */
+.dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.card {
+  padding: 28px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px #00000012;
+  border: 1px solid #e4eaf2;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px #00000018;
+}
+
+.card-icon {
+  font-size: 32px;
+}
+
+.card h3 {
+  color: #1769aa;
+  margin-bottom: 8px;
+}
+
+.card p {
+  color: #64748b;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 23px;
+  }
+
+  .dashboard-content {
+    padding: 20px;
+  }
+}
